@@ -11,9 +11,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 import "../interfaces/IConverter.sol";
 import "../interfaces/IOneSplitAudit.sol";
 import "../interfaces/IStrategy.sol";
-import "../access/SettAccessControl.sol";
+import "../access/AccessControl.sol";
 
-contract StrategyController is SettAccessControl {
+contract StrategyController is AccessControl {
     using SafeERC20Upgradeable for IERC20Upgradeable;
     using AddressUpgradeable for address;
     using SafeMathUpgradeable for uint256;

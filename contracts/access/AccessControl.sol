@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 /*
     Common base for permissioned roles throughout Sett ecosystem
 */
-contract SettAccessControl is Initializable {
+contract AccessControl is Initializable {
     address public governance;
     address public strategist;
     address public keeper;
