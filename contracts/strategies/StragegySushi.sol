@@ -9,10 +9,10 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/SafeERC20Upgradeable.sol
 
 import "./StrategyBase.sol";
 import "../interfaces/IMasterChef.sol";
-import "../interfaces/ICToken.sol";
 import "../interfaces/IOneSplitAudit.sol";
 import "../interfaces/IUniswapRouterV2.sol";
 import "../interfaces/IUniswapV2Pair.sol";
+import "../interfaces/IERC20Detailed.sol";
 
 contract StrategySushi is StragegyBase {
     using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -31,18 +31,24 @@ contract StrategySushi is StragegyBase {
         address _keeper,
         address _guardian,
         address _sushiChef,
-        address _sushi,
         uint256 _pid
     ) public initializer {
         __StrategyBase_init(_governance, _strategist, _controller, _keeper, _guardian);
         masterChef = _sushiChef;
-        require(sushi == IMasterChef(masterChef).sushi(), "!sushi");
-        sushi = _sushi;
+        sushi = IMasterChef(masterChef).sushi();
         pid = _pid;
+        (want,,,) = IMasterChef(masterChef).poolInfo(_pid);
     }
 
-    function getName() external override pure returns (string memory) {
-        return "StrategySushiFarm";
+    function getName() external override view returns (string memory) {
+        return string(
+            abi.encodePacked(
+                "StrategySushiFarm ",
+                IERC20Detailed(IUniswapV2Pair(want).token0()).symbol(),
+                "/",
+                IERC20Detailed(IUniswapV2Pair(want).token1()).symbol()
+            )
+        );
     }
 
     function balanceOfPool() public override view returns (uint) {
@@ -78,6 +84,12 @@ contract StrategySushi is StragegyBase {
         if (sushi_ > 0) {
             IERC20Upgradeable(sushi).safeTransfer(IController(controller).rewards(), sushi_);
         }
+        
+        // transfer want to vault
+        IERC20Upgradeable(want).safeTransfer(
+            IController(controller).vaults(want), 
+            IERC20Upgradeable(want).balanceOf(address(this))
+        );
     }
 
     function _withdrawSome(uint _amount) internal override returns (uint) {

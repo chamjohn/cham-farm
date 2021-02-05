@@ -1,6 +1,8 @@
 pragma solidity ^0.6.11;
 
 interface ICToken {
+    /*** User Interface ***/
+
     function transfer(address dst, uint amount) external returns (bool);
     function transferFrom(address src, address dst, uint amount) external returns (bool);
     function approve(address spender, uint amount) external returns (bool);
@@ -19,5 +21,20 @@ interface ICToken {
     function getCash() external view returns (uint);
     function accrueInterest() external returns (uint);
     function seize(address liquidator, address borrower, uint seizeTokens) external returns (uint);
+
+    /*** User Interface ***/
+
+    function mint(uint mintAmount) external returns (uint);
+    function redeem(uint redeemTokens) external returns (uint);
+    function redeemUnderlying(uint redeemAmount) external returns (uint);
+    function borrow(uint borrowAmount) external returns (uint);
+    function repayBorrow(uint repayAmount) external returns (uint);
+    function repayBorrowBehalf(address borrower, uint repayAmount) external returns (uint);
+    function liquidateBorrow(address borrower, uint repayAmount, address cTokenCollateral) external returns (uint);
+
+    function underlying() external view returns (address);
+}
+interface ICEther {
+    function mint() external payable;
 }
 

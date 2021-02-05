@@ -37,6 +37,7 @@ abstract contract StragegyBase is PausableUpgradeable, AccessControl {
     uint256 public withdrawalFee;
 
     uint256 public constant MAX_FEE = 10000;
+    address public constant weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant uniswap = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; // Uniswap Dex
     address public constant sushiswap = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F; // Sushiswap Dex
 
@@ -57,6 +58,10 @@ abstract contract StragegyBase is PausableUpgradeable, AccessControl {
         controller = _controller;
         guardian = _guardian;
     }
+
+    // enable receiving ether, do nothing
+    receive() external payable {}
+
 
     // ===== Modifiers =====
 
@@ -118,7 +123,7 @@ abstract contract StragegyBase is PausableUpgradeable, AccessControl {
         controller = _controller;
     }
 
-    function deposit() public virtual whenNotPaused {
+    function deposit() public virtual whenNotPaused payable {
         _onlyAuthorizedActorsOrController();
         uint256 _want = IERC20Upgradeable(want).balanceOf(address(this));
         if (_want > 0) {
@@ -301,7 +306,7 @@ abstract contract StragegyBase is PausableUpgradeable, AccessControl {
     // function harvest() external virtual;
 
     /// @dev User-friendly name for this strategy for purposes of convenient reading
-    function getName() external virtual pure returns (string memory);
+    function getName() external virtual view returns (string memory);
 
     /// @dev Balance of want currently held in strategy positions
     function balanceOfPool() public virtual view returns (uint256);
