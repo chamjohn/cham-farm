@@ -13,4 +13,6 @@ interface IController {
     function rewards() external view returns (address);
 
     function vaults(address) external view returns (address);
+
+    function onesplit() external view returns (address);
 }

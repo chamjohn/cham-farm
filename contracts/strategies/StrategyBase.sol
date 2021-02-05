@@ -38,11 +38,12 @@ abstract contract StragegyBase is PausableUpgradeable, AccessControl {
 
     uint256 public constant MAX_FEE = 10000;
     address public constant uniswap = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; // Uniswap Dex
+    address public constant sushiswap = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F; // Sushiswap Dex
 
     address public controller;
     address public guardian;
 
-    function __BaseStrategy_init(
+    function __StrategyBase_init(
         address _governance,
         address _strategist,
         address _controller,
@@ -252,15 +253,15 @@ abstract contract StragegyBase is PausableUpgradeable, AccessControl {
         IUniswapRouterV2(uniswap).swapExactTokensForETH(balance, 0, path, address(this), now);
     }
 
-    /// @notice Add liquidity to uniswap for specified token pair, utilizing the maximum balance possible
-    function _add_max_liquidity_uniswap(address token0, address token1) internal {
+    /// @notice Add liquidity to uniswap or sushiswap for specified token pair, utilizing the maximum balance possible
+    function _add_max_liquidity(address swapDex, address token0, address token1) internal {
         uint256 _token0Balance = IERC20Upgradeable(token0).balanceOf(address(this));
         uint256 _token1Balance = IERC20Upgradeable(token1).balanceOf(address(this));
 
-        _safeApproveHelper(token0, uniswap, _token0Balance);
-        _safeApproveHelper(token1, uniswap, _token1Balance);
+        _safeApproveHelper(token0, swapDex, _token0Balance);
+        _safeApproveHelper(token1, swapDex, _token1Balance);
 
-        IUniswapRouterV2(uniswap).addLiquidity(
+        IUniswapRouterV2(swapDex).addLiquidity(
             token0,
             token1,
             _token0Balance,
