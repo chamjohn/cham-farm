@@ -184,7 +184,7 @@ contract StrategyCompoundV1 is StragegyBase {
         // Take fees on comp
         uint govFee = _processFee(comp, compHarvested, performanceFeeGovernance, governance);
 
-        uint compAfterFee = compHarvested.sub(govFee).div(2);
+        uint compAfterFee = compHarvested.sub(govFee);
         // swap comp to want
         {
             address onesplit = IController(controller).onesplit();
