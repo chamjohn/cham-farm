@@ -78,6 +78,7 @@ interface IComptroller {
         bool isComped
     );
 
+    function getCompAddress() external view returns (address);
     // interface of G4
     function claimComp(address holder) external;
 }

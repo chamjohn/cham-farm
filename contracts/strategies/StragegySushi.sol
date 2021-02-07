@@ -84,12 +84,7 @@ contract StrategySushi is StragegyBase {
         if (sushi_ > 0) {
             IERC20Upgradeable(sushi).safeTransfer(IController(controller).rewards(), sushi_);
         }
-        
-        // transfer want to vault
-        IERC20Upgradeable(want).safeTransfer(
-            IController(controller).vaults(want), 
-            IERC20Upgradeable(want).balanceOf(address(this))
-        );
+
     }
 
     function _withdrawSome(uint _amount) internal override returns (uint) {
@@ -111,7 +106,11 @@ contract StrategySushi is StragegyBase {
         IMasterChef(masterChef).deposit(pid, 0);
 
         uint sushiHarvested = IERC20Upgradeable(sushi).balanceOf(address(this));
-
+        
+        if (sushiHarvested == 0) {
+            return;
+        }
+        
         (address t0, address t1) = (IUniswapV2Pair(want).token0(), IUniswapV2Pair(want).token1());
         
 

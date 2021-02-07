@@ -15,7 +15,7 @@ import "../interfaces/IUniswapRouterV2.sol";
 import "../interfaces/IUniswapV2Pair.sol";
 import "../interfaces/IERC20Detailed.sol";
 
-contract StrategyCompound is StragegyBase {
+contract StrategyCompoundV2 is StragegyBase {
     using SafeERC20Upgradeable for IERC20Upgradeable;
     using AddressUpgradeable for address;
     using SafeMathUpgradeable for uint256;

@@ -79,7 +79,7 @@ contract Vault is ERC20Upgradeable, AccessControlDefended {
     }
 
     function _blockLocked() internal view {
-        require(blockLock[msg.sender] < block.number, "blockLocked");
+        require(approved[msg.sender] || blockLock[msg.sender] < block.number, "blockLocked");
     }
 
     /// ===== View Functions =====
