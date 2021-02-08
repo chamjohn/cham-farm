@@ -110,7 +110,6 @@ contract StrategySushi is StragegyBase {
         if (sushiHarvested == 0) {
             return;
         }
-        
         (address t0, address t1) = (IUniswapV2Pair(want).token0(), IUniswapV2Pair(want).token1());
         
 
